@@ -1,50 +1,88 @@
-# Welcome to your Expo app 👋
+# Meibu
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile app to help you track your budget. This project was developed as a school assignment using React Native to demonstrate practical skills in project management.
 
-## Get started
+## Table of Contents
 
-1. Install dependencies
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
+## Introduction
+
+### Overview
+
+Meibu is designed to help users manage their finances effectively by tracking income, expenses, and savings goals.
+
+### Purpose
+
+- **Educational:** Developed as a school project to apply project management.
+- **Practical:** Provides a hands-on solution for personal budgeting and financial tracking.
+
+## Features
+
+- [ ] **Expense Tracking:** Easily add, edit, and delete income and expense entries.
+- [ ] **Budget Visualization:** Visual charts and graphs for viewing spending trends.
+- [ ] **Savings Goals:** Set and monitor your progress toward savings targets.
+- [ ] **Cross-Platform:** Seamlessly run on both iOS and Android devices.
+- [ ] **Data Persistence:** Save your data locally or sync with cloud storage (depending on your implementation).
+
+## Installation
+
+### Prerequisites
+
+- **Node.js:** [Download Node.js](https://nodejs.org/)
+- **React Native CLI:** If using the React Native CLI, install it globally:
+  ```bash
+  npm install -g react-native-cli
+  ```
+- **Xcode (for iOS):** [Download Xcode](https://developer.apple.com/xcode/) (macOS only)
+- **Android Studio (for Android):** [Download Android Studio](https://developer.android.com/studio)
+- **Watchman (optional but recommended on macOS):**
+  ```bash
+  brew install watchman
+  ```
+
+### Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/SimonRenggli1/meibu.git
+   cd meibu
+   ```
+2. **Install dependencies:**
    ```bash
    npm install
    ```
-
-2. Start the app
-
+3. **Link native dependencies (if applicable):**
    ```bash
-    npx expo start
+   npx react-native link
    ```
 
-In the output, you'll find options to open the app in a
+## Usage
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Running the App
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. **Start the Metro bundler:**
+   ```bash
+   npx expo start
+   ```
+2. **Run the app in the desired version:**
+   ```
+   › Press a │ open Android
+   › Press i │ open iOS simulator
+   › Press w │ open web
+   ```
+   
+## License
 
-## Get a fresh project
+Distributed under the MIT License. See the `LICENSE` file for more information.
 
-When you're ready, run:
+## Acknowledgements
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Special thanks to Barmet Lukas for their guidance and support.
+- Thanks to the React Native community for the excellent documentation and resources.
+- Credits to [endoplasmatischesretikulum](https://github.com/endoplasmatischesretikulum) for being awesome
