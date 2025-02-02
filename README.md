@@ -1,4 +1,7 @@
 # Meibu
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SimonRenggli1_meibu&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SimonRenggli1_meibu)
+
+---
 
 A mobile app to help you track your budget. This project was developed as a school assignment using React Native to demonstrate practical skills in project management.
 
