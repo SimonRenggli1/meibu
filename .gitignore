@@ -20,6 +20,9 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
+# WebStorm
+.idea
+
 # debug
 npm-debug.*
 yarn-debug.*
