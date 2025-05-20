@@ -1,14 +1,8 @@
-# Tamagui + Solito + Next + Expo Monorepo
-
-```sh
-npm create tamagui
-```
+# Meibu
 
 ## 🔦 About
 
-This monorepo is a starter for an Expo + Next.js + Tamagui + Solito app.
-
-Many thanks to [@FernandoTheRojo](https://twitter.com/fernandotherojo) for the Solito starter monorepo which this was forked from. Check out his [talk about using expo + next together at Next.js Conf 2021](https://www.youtube.com/watch?v=0lnbdRweJtA).
+This monorepo is for the Meibu app.
 
 ## 📦 Included packages
 
@@ -31,20 +25,9 @@ The main apps are:
     - `features` (don't use a `screens` folder. organize by feature.)
     - `provider` (all the providers that wrap the app, and some no-ops for Web.)
 
-You can add other folders inside of `packages/` if you know what you're doing and have a good reason to.
-
-> [!TIP]
-> Switching from `app` to `pages` router:
->
-> - remove `app` folder from `apps/next`
-> - move `index.tsx` from `pages-example` to `pages` folder
-> - rename `pages-example-user` to `user` and be sure to update `linkTarget` in `screen.tsx` to `user` as well
-> - delete `SwitchRouterButton.tsx` component and remove it from `screen.tsx` and `packages/ui/src/index.tsx`
-> - search for `pagesMode` keyword and remove it
-
 ## 🏁 Start the app
 
-- Install dependencies: `yarn`
+- Install dependencies: `yarn install`
 
 - Next.js local dev: `yarn web`
 
@@ -59,30 +42,6 @@ To see debug output to verify the compiler, add `// debug` as a comment to the t
 Note we're following the [design systems guide](https://tamagui.dev/docs/guides/design-systems) and creating our own package for components.
 
 See `packages/ui` named `@my/ui` for how this works.
-
-## 🆕 Add new dependencies
-
-### Pure JS dependencies
-
-If you're installing a JavaScript-only dependency that will be used across platforms, install it in `packages/app`:
-
-```sh
-cd packages/app
-yarn add date-fns
-cd ../..
-yarn
-```
-
-### Native dependencies
-
-If you're installing a library with any native code, you must install it in `expo`:
-
-```sh
-cd apps/expo
-yarn add react-native-reanimated
-cd ..
-yarn
-```
 
 ## Update new dependencies
 
