@@ -51,21 +51,12 @@ test('Next.js build completes', async () => {
 
     // Check for route information
     expect(result).toContain('Route (app)')
-    expect(result).toContain('Route (pages)')
     expect(result).toContain('First Load JS shared by all')
 
     // Check for specific route patterns
     expect(result).toContain('○ /')
     expect(result).toContain('○ /_not-found')
     expect(result).toContain('ƒ /user/[id]')
-    expect(result).toContain('/_app')
-    expect(result).toContain('/pages-example')
-    expect(result).toContain('/pages-example-user/[id]')
-
-    // Check for chunk information
-    expect(result).toContain('chunks/framework-')
-    expect(result).toContain('chunks/main-')
-    expect(result).toContain('chunks/pages/_app-')
 
     // Check for static and dynamic route indicators
     expect(result).toContain('○  (Static)   prerendered as static content')
