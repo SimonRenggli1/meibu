@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "m306",
-    "slug": "m306",
+    "name": "meibu",
+    "slug": "meibu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "m306",
+    "scheme": "meibu",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
