@@ -1,15 +1,32 @@
-import { ThemedText } from "@/components/ThemedText";
-import { ScrollView } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import {StyleSheet, View} from "react-native";
+import {Text} from '@rneui/themed';
 
 export default function HomeScreen() {
-  return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView>
-          <ThemedText>Helo</ThemedText>
-        </ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
-  );
+    return (
+        <View style={[styles.container]}>
+            <View style={styles.title}>
+                <Text h1 style={[styles.text]}>
+                    Meibu
+                </Text>
+            </View>
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#25292e',
+        padding: 5
+    },
+    text: {
+        color: '#fff',
+        fontWeight: "600"
+    },
+    title: {
+        padding: 20,
+        width: '100%',
+        alignItems: "center",
+        justifyContent: "flex-start",
+    }
+});
