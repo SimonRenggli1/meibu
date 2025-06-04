@@ -1,7 +1,7 @@
-import { ThemedText } from '@/components/ThemedText';
+import {Text} from "@rneui/themed";
 
 export default function AddTransactionScreen() {
     return (
-        <ThemedText>Add Transaction</ThemedText>
+        <Text>Add Transaction</Text>
     );
 }
