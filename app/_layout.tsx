@@ -5,7 +5,7 @@ import "../global.css"
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+      Oddlini: require("../assets/fonts/oddlini-regular.ttf"),
   });
 
   if (!loaded) {
