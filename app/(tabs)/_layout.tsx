@@ -26,7 +26,10 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: "Home",
+                    title: "Meibu",
+                    headerTitleStyle: {
+                      fontSize: 32,
+                    },
                     tabBarLabel: "Home",
                     tabBarIcon: ({color}) => (
                         <AntDesign name="home" size={24} color={color}/>
