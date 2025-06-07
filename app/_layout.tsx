@@ -1,10 +1,12 @@
+import "../global.css"
 import "react-native-reanimated";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
-import "../global.css"
+import {SafeAreaProvider} from "react-native-safe-area-context";
+
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
+    const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
@@ -12,10 +14,14 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+
+
+    return (
+        <SafeAreaProvider>
+              <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+              </Stack>
+        </SafeAreaProvider>
   );
 }
