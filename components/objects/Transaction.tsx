@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import uuid from 'react-native-uuid';
 import { category } from "@/components/enums/category";
 import { transactionType } from "@/components/enums/transactionType";
 
@@ -16,7 +16,7 @@ export class Transaction {
         categoryValue: category,
         typeValue: transactionType
     ) {
-        this.id = uuidv4();
+        this.id = uuid.v4() as string;
         this.title = title;
         this.amount = amount;
         this.category = categoryValue;
