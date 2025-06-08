@@ -1,21 +1,25 @@
-import "react-native-reanimated";
-import { Stack } from "expo-router";
-import { useFonts } from "expo-font";
 import "../global.css"
+import "react-native-reanimated";
+import {Stack} from "expo-router";
+import {useFonts} from "expo-font";
+import {SafeAreaProvider} from "react-native-safe-area-context";
+
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
-      Oddlini: require("../assets/fonts/oddlini-regular.ttf"),
-  });
+    const [loaded] = useFonts({
+        Oddlini: require("../assets/fonts/oddlini-regular.ttf"),
+    });
 
-  if (!loaded) {
-    return null;
-  }
+    if (!loaded) {
+        return null;
+    }
 
-  return (
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-  );
+    return (
+        <SafeAreaProvider>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                <Stack.Screen name="+not-found"/>
+            </Stack>
+        </SafeAreaProvider>
+    );
 }
