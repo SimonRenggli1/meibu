@@ -3,6 +3,9 @@
     "name": "meibu",
     "slug": "meibu",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "meibu",
     "newArchEnabled": true,
     "web": {
       "bundler": "metro",
@@ -13,10 +16,20 @@
       "typedRoutes": true
     },
     "android": {
-      "package": "com.resi.meibu"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png"
+      },
+      "package": "com.robin404.meibu"
     },
     "ios": {
-      "bundleIdentifier": "com.resi.meibu"
+      "bundleIdentifier": "com.resi.meibu",
+      "supportsTablet": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "05e0d366-90d5-4140-8a28-e3982957fb7e"
+      }
     }
   }
 }
