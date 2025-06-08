@@ -1,11 +1,20 @@
-import React, { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
-import { Button, ButtonGroup, Input, Text } from "@rneui/themed";
-import { Picker } from "@react-native-picker/picker";
-import { storeTransaction } from '@/components/Transactions';
-import { transactionType } from "@/components/enums/transactionType";
-import { category } from "@/components/enums/category";
-import { Transaction } from "@/components/objects/Transaction";
+import React, {useState} from "react";
+import {
+    Alert,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
+import {Button, ButtonGroup, Input, Text} from "@rneui/themed";
+import {Picker} from "@react-native-picker/picker";
+import {storeTransaction} from '@/components/Transactions';
+import {transactionType} from "@/components/enums/transactionType";
+import {category} from "@/components/enums/category";
+import {Transaction} from "@/components/objects/Transaction";
 
 export default function AddTransactionScreen() {
     const categories = category.getAllCategories();
@@ -35,52 +44,66 @@ export default function AddTransactionScreen() {
 
             Alert.alert("Erfolg", "Transaktion hinzugefügt");
             resetForm();
-        } catch {
+        } catch (e) {
+            console.error("Speicherfehler:", e);
             Alert.alert("Fehler", "Transaktion konnte nicht hinzugefügt werden");
         }
     };
 
     return (
-        <View style={styles.container}>
-            <ButtonGroup
-                buttons={types}
-                selectedIndex={typeIndex}
-                onPress={setTypeIndex}
-                containerStyle={styles.buttonGroup}
-            />
-
-            <Input placeholder="Name" value={title} onChangeText={setTitle} />
-            <Input placeholder="Preis" value={amount} onChangeText={setAmount} keyboardType="numeric" />
-
-            <Text style={styles.label}>Kategorie</Text>
-            <Picker
-                selectedValue={selectedCategory}
-                onValueChange={setSelectedCategory}
-                style={styles.picker}
+        <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView
+                style={{flex: 1}}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={100}
             >
-                {categories.map((cat) => (
-                    <Picker.Item key={cat} label={cat} value={cat} />
-                ))}
-            </Picker>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View>
+                            <ButtonGroup
+                                buttons={types}
+                                selectedIndex={typeIndex}
+                                onPress={setTypeIndex}
+                                containerStyle={styles.buttonGroup}
+                            />
 
-            <Button title="Transaktion speichern" onPress={saveTransaction} />
-        </View>
+                            <Input placeholder="Name" value={title} onChangeText={setTitle}/>
+                            <Input
+                                placeholder="Preis"
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="numeric"
+                            />
+
+                            <Text style={styles.label}>Kategorie</Text>
+                            <Picker
+                                selectedValue={selectedCategory}
+                                onValueChange={setSelectedCategory}
+                                style={styles.picker}
+                            >
+                                {categories.map((cat) => (
+                                    <Picker.Item key={cat} label={cat} value={cat}/>
+                                ))}
+                            </Picker>
+                            <Button title="Transaktion speichern" onPress={saveTransaction}/>
+                        </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
+let styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 16,
-    },
-    buttonGroup: {
+        flex: 1, padding: 16,
+    }, buttonGroup: {
+        marginBottom: 16,
+    }, label: {
+        marginBottom: 8, fontWeight: "bold",
+    }, picker: {
         marginBottom: 16,
     },
-    label: {
-        marginBottom: 8,
-        fontWeight: "bold",
+    scrollViewContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
-    picker: {
-        marginBottom: 16,
-    },
-});
+})
