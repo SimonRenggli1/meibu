@@ -25,6 +25,15 @@
       "bundleIdentifier": "com.resi.meibu",
       "supportsTablet": true
     },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Erlaube MeiBu FaceID zu benutzen."
+        }
+      ]
+    ],
     "extra": {
       "router": {},
       "eas": {
