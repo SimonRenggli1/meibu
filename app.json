@@ -30,7 +30,7 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": 'Erlaube MeiBu FaceID zu benutzen.'
+          "faceIDPermission": "Erlaube MeiBu FaceID zu benutzen."
         }
       ]
     ],
