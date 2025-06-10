@@ -1,19 +1,19 @@
 import uuid from 'react-native-uuid';
-import { category } from "@/components/enums/category";
+import { Category } from "@/components/enums/category";
 import { transactionType } from "@/components/enums/transactionType";
 
 export class Transaction {
     id: string;
     title: string;
     amount: number;
-    category: category;
+    category: Category;
     type: transactionType;
     date: string;
 
     constructor(
         title: string,
         amount: number,
-        categoryValue: category,
+        categoryValue: Category,
         typeValue: transactionType
     ) {
         this.id = uuid.v4() as string;

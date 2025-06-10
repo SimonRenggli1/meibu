@@ -8,7 +8,7 @@ export enum Category {
 }
 
 export class category {
-    static getAllCategories(): string[] {
+    static getAllCategories(): Category[] {
         return Object.values(Category);
     }
 }

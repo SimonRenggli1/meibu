@@ -9,18 +9,11 @@ export default function TabLayout() {
     return (
         <Tabs
             screenOptions={{
-                headerShown: true,
+                headerShown: false,
                 headerTitleAlign: "center",
                 animation: "fade",
                 // IOS Only - Haptic, BlurBackground
                 tabBarButton: HapticTab,
-                tabBarBackground: TabBarBackground,
-                tabBarStyle: Platform.select({
-                    ios: {
-                        position: "absolute",
-                    },
-                    default: {},
-                }),
             }}
         >
             <Tabs.Screen
