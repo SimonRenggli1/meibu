@@ -1,9 +1,7 @@
 import React from "react";
 import {Tabs} from "expo-router";
-import {Platform} from "react-native";
 import {HapticTab} from "@/components/HapticTab";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import TabBarBackground from "@/components/ui/TabBarBackground";
 
 export default function TabLayout() {
     return (
@@ -12,7 +10,6 @@ export default function TabLayout() {
                 headerShown: false,
                 headerTitleAlign: "center",
                 animation: "fade",
-                // IOS Only - Haptic, BlurBackground
                 tabBarButton: HapticTab,
             }}
         >
@@ -36,17 +33,6 @@ export default function TabLayout() {
                     title: "Add Transaction",
                     tabBarIcon: ({color}) => (
                         <AntDesign name="plus" size={24} color={color}/>
-                    ),
-                }}
-            />
-
-            <Tabs.Screen
-                name="transactions"
-                options={{
-                    title: "My Transactions",
-                    tabBarLabel: "Transactions",
-                    tabBarIcon: ({color}) => (
-                        <AntDesign name="shoppingcart" size={24} color={color}/>
                     ),
                 }}
             />

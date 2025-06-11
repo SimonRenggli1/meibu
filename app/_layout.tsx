@@ -1,13 +1,15 @@
 import "../global.css";
 import "react-native-reanimated";
-import { Stack } from "expo-router";
-import { useFonts } from "expo-font";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { UserInactivityProvider } from "@/components/UserInactivity";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { AuthGuard } from "@/components/AuthGuard";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
+import {Stack} from "expo-router";
+import {useFonts} from "expo-font";
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import {UserInactivityProvider} from "@/components/UserInactivity";
+import {AuthProvider} from "@/contexts/AuthContext";
+import {AuthGuard} from "@/components/AuthGuard";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
+import {BudgetProvider} from '@/contexts/BudgetContext';
+import {StyleSheet} from "react-native";
+
 
 export default function RootLayout() {
     const [loaded] = useFonts({
@@ -15,23 +17,26 @@ export default function RootLayout() {
     });
 
     return (
-        <GestureHandlerRootView style={styles.container}>
-            <AuthProvider>
-                <UserInactivityProvider>
-                    <SafeAreaProvider>
-                        <AuthGuard>
-                            <Stack>
-                                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                                <Stack.Screen name="lock" options={{ headerShown: false }} />
-                                <Stack.Screen name="+not-found" />
-                            </Stack>
-                        </AuthGuard>
-                    </SafeAreaProvider>
-                </UserInactivityProvider>
-            </AuthProvider>
-        </GestureHandlerRootView>
+        <SafeAreaProvider>
+            <GestureHandlerRootView style={styles.container}>
+                <AuthProvider>
+                    <BudgetProvider>
+                        <UserInactivityProvider>
+                            <AuthGuard>
+                                <Stack>
+                                    <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                                    <Stack.Screen name="lock" options={{headerShown: false}}/>
+                                    <Stack.Screen name="+not-found"/>
+                                </Stack>
+                            </AuthGuard>
+                        </UserInactivityProvider>
+                    </BudgetProvider>
+                </AuthProvider>
+            </GestureHandlerRootView>
+        </SafeAreaProvider>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {

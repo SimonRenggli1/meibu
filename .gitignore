@@ -43,4 +43,5 @@ app-example
 .vscode
 
 # Android Studio
-./android
+/android
+
