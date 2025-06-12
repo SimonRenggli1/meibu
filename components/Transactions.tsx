@@ -27,8 +27,10 @@ const getTransactions = async (): Promise<Transaction[]> => {
     }
 };
 
-const clearTransactions = async () => {
-    await AsyncStorage.removeItem('transactions');
+const deleteTransaction = async (id: string) => {
+    const stored = await getTransactions();
+    const filtered = stored.filter(t => t.id !== id);
+    await AsyncStorage.setItem("transactions", JSON.stringify(filtered));
 };
 
-export { storeTransaction, getTransactions, clearTransactions };
+export { storeTransaction, getTransactions, deleteTransaction };

@@ -8,7 +8,6 @@ export enum RecurringInterval {
 }
 
 export const getAllRecurringIntervals = (): { label: string; value: RecurringInterval }[] => [
-    { label: "Keine Wiederholung", value: RecurringInterval.NONE },
     { label: "Täglich", value: RecurringInterval.DAILY },
     { label: "Wöchentlich", value: RecurringInterval.WEEKLY },
     { label: "Alle 2 Wochen", value: RecurringInterval.BIWEEKLY },

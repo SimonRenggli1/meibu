@@ -57,6 +57,8 @@ export default function AddTransactionScreen() {
                 parseFloat(amount),
                 selectedCategory,
                 types[typeIndex],
+                isRecurring,
+                isRecurring ? recurringInterval : RecurringInterval.NONE
             );
             await storeTransaction(transaction);
 
@@ -71,7 +73,7 @@ export default function AddTransactionScreen() {
             }
 
             resetForm();
-            router.push('/')
+            router.push('/');
         } catch (e) {
             console.error("Speicherfehler:", e);
             Alert.alert("Fehler", "Transaktion konnte nicht hinzugefügt werden");
