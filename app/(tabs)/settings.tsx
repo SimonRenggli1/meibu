@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, ScrollView, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, ScrollView, View, TouchableOpacity, SafeAreaView} from 'react-native';
 import {ListItem, Icon, Text, Divider, Card} from '@rneui/themed';
 import {useBudgetContext} from '@/contexts/BudgetContext';
 import {Category, category} from '@/components/enums/category';
@@ -36,13 +36,11 @@ export default function SettingsScreen() {
 
     // ================= RENDER-BLOCK =================
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <ScrollView>
-                {/* --- Überschrift --- */}
                 <Text h4 style={styles.title}>Kategorien</Text>
                 <Divider style={styles.divider}/>
 
-                {/* === EINAHMEN-ANZEIGE === */}
                 <TouchableOpacity
                     activeOpacity={0.89}
                     onPress={() => router.push('/edit-income')}
@@ -123,7 +121,7 @@ export default function SettingsScreen() {
                         );
                     })}
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 }
 
