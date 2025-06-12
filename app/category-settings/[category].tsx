@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useLocalSearchParams, useRouter} from 'expo-router';
-import {View, StyleSheet, StatusBar} from 'react-native';
+import {View, StyleSheet, StatusBar, SafeAreaView} from 'react-native';
 import {Button, Input, Text} from '@rneui/themed';
 import {useBudgetContext} from '@/contexts/BudgetContext';
 import {Category} from '@/components/enums/category';
@@ -34,7 +34,7 @@ export default function EditCategoryLimitScreen() {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#FFFFFF"} barStyle="dark-content"/>
             <Text h4 style={styles.header}>Limit für {category} setzen</Text>
             <Input
@@ -50,7 +50,7 @@ export default function EditCategoryLimitScreen() {
                 disabled={isNaN(Number(value)) || value === ''}
                 buttonStyle={styles.buttonSave}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 

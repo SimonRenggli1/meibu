@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
-import { ListItem, Icon, Text, Card } from '@rneui/themed';
-import { useBudgetContext } from '@/contexts/BudgetContext';
-import { Category, category } from '@/components/enums/category';
-import { useTransactions } from '@/hooks/useTransactions';
-import { useRouter } from 'expo-router';
-import { SmallSavingGoalCard } from "@/components/SmallSavingGoalCard";
+import {StyleSheet, ScrollView, View, TouchableOpacity, SafeAreaView} from 'react-native';
+import {ListItem, Icon, Text, Divider, Card} from '@rneui/themed';
+import {useBudgetContext} from '@/contexts/BudgetContext';
+import {Category, category} from '@/components/enums/category';
+import {useTransactions} from '@/hooks/useTransactions';
+import {useRouter} from 'expo-router';
+import {SmallSavingGoalCard} from "@/components/SmallSavingGoalCard";
 import dayjs from 'dayjs';
 
 // ===== SETTINGS-SCREEN =====
@@ -42,11 +42,10 @@ export default function SettingsScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <ScrollView>
                 <Text h4 style={styles.title}>Kategorien</Text>
 
-                {/* === EINNAHMEN-ANZEIGE === */}
                 <TouchableOpacity
                     activeOpacity={0.89}
                     onPress={() => router.push('/edit-income')}
@@ -142,7 +141,7 @@ export default function SettingsScreen() {
                         );
                     })}
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 }
 
