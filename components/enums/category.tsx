@@ -1,11 +1,11 @@
 export enum Category {
-    SAVINGS = 'Savings',
-    FOOD = 'Food',
+    FOOD = 'Essen',
     TRANSPORT = 'Transport',
     SHOPPING = 'Shopping',
-    ENTERTAINMENT = 'Entertainment',
-    UTILITIES = 'Utilities',
-    OTHER = 'Other',
+    ENTERTAINMENT = 'Spass',
+    UTILITIES = 'Versorgung',
+    SAVINGS = 'Sparen',
+    OTHER = 'Anderes',
 }
 
 export class category {
