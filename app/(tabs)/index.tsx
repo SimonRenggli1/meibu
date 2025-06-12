@@ -10,6 +10,7 @@ import {useFocusEffect} from "expo-router";
 import {CategoryHelper} from "@/helpers/CategoryHelper";
 import {generateRecurringInstances} from "@/helpers/GenerateRecurringInstances";
 import {Swipeable} from "react-native-gesture-handler";
+import { GraphComponent } from "@/components/Graph";
 
 
 const TIME_FILTERS = ["Heute", "Woche", "Monat", "Jahr"];
@@ -86,6 +87,7 @@ export default function HomeScreen() {
                 <Text style={styles.header}>Deine Ausgaben</Text>
 
                 <View style={styles.graphContainer}>
+                    <GraphComponent transactions={filteredTransactions}/>
                     <Text style={styles.totalText}>Gesamt: CHF {totalSpent.toFixed(2)}</Text>
                 </View>
 
