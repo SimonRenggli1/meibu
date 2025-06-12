@@ -1,6 +1,7 @@
 import uuid from 'react-native-uuid';
 import { Category } from "@/components/enums/category";
 import { transactionType } from "@/components/enums/transactionType";
+import { RecurringInterval } from "@/components/enums/reacurringInterval";
 
 export class Transaction {
     id: string;
@@ -9,12 +10,16 @@ export class Transaction {
     category: Category;
     type: transactionType;
     date: string;
+    isRecurring?: boolean;
+    recurringInterval?: RecurringInterval;
 
     constructor(
         title: string,
         amount: number,
         categoryValue: Category,
-        typeValue: transactionType
+        typeValue: transactionType,
+        isRecurring: boolean = false,
+        recurringInterval?: RecurringInterval
     ) {
         this.id = uuid.v4() as string;
         this.title = title;
@@ -22,5 +27,9 @@ export class Transaction {
         this.category = categoryValue;
         this.type = typeValue;
         this.date = new Date().toISOString();
+        if (isRecurring) {
+            this.isRecurring = true;
+            this.recurringInterval = recurringInterval;
+        }
     }
 }

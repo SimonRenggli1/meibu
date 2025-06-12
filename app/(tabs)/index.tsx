@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {FlatList, StatusBar, StyleSheet, TouchableOpacity, View,} from "react-native";
 import {Text} from "@rneui/themed";
-import {getTransactions} from "@/components/Transactions";
+import {getTransactions, deleteTransaction} from "@/components/Transactions";
 import {Transaction} from "@/components/objects/Transaction";
 import dayjs from "dayjs";
 import {TransactionType} from "@/components/enums/transactionType";
@@ -9,6 +9,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {useFocusEffect} from "expo-router";
 import {GraphComponent} from "@/components/Graph";
 import {CategoryHelper} from "@/helpers/CategoryHelper";
+import {generateRecurringInstances} from "@/helpers/GenerateRecurringInstances";
+import { Swipeable } from "react-native-gesture-handler";
 
 
 const TIME_FILTERS = ["Heute", "Woche", "Monat", "Jahr"];
@@ -19,16 +21,29 @@ export default function HomeScreen() {
     const [totalSpent, setTotalSpent] = useState(0);
     const [selectedFilter, setSelectedFilter] = useState("Heute");
 
+    const handleDelete = async (id: string) => {
+        await deleteTransaction(id);
+        setTransactions(prev => prev.filter(t => t.id !== id));
+    };
+
     useFocusEffect(
         useCallback(() => {
             const fetchTransactions = async () => {
                 const allTransactions = await getTransactions();
-                setTransactions(allTransactions);
+
+                const recurringInstances = allTransactions
+                    .filter(t => t.isRecurring)
+                    .flatMap(t => generateRecurringInstances(t));
+
+                const nonRecurring = allTransactions.filter(t => !t.isRecurring);
+
+                setTransactions([...nonRecurring, ...recurringInstances]);
             };
 
             fetchTransactions();
         }, [])
     );
+
 
     useEffect(() => {
         const now = dayjs();
@@ -52,7 +67,8 @@ export default function HomeScreen() {
         const expenses = filtered.filter((t) => t.type === TransactionType.EXPENSE);
         const total = expenses.reduce((sum, t) => sum + t.amount, 0);
 
-        setFilteredTransactions(filtered);
+        const sorted = filtered.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
+        setFilteredTransactions(sorted);
         setTotalSpent(total);
     }, [selectedFilter, transactions]);
 
@@ -63,7 +79,6 @@ export default function HomeScreen() {
             <Text style={styles.header}>Deine Ausgaben</Text>
 
             <View style={styles.graphContainer}>
-                <GraphComponent transactions={filteredTransactions}/>
                 <Text style={styles.totalText}>Gesamt: CHF {totalSpent.toFixed(2)}</Text>
             </View>
 
@@ -97,28 +112,41 @@ export default function HomeScreen() {
                 contentContainerStyle={styles.transactionList}
                 renderItem={({item}) => {
                     const isIncome = item.type === "Income";
+
+                    const renderRightActions = () => (
+                        <View style={styles.deleteBox}>
+                            <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                                <Icon name="trash-can-outline" size={30} color="#fff" />
+                            </TouchableOpacity>
+                        </View>
+                    );
+
                     return (
-                        <View style={styles.transactionCard}>
-                            <Icon
-                                name={CategoryHelper.getIconName(item.category)}
-                                size={28}
-                                color="#555"
-                            />
-                            <View style={styles.transactionInfo}>
-                                <Text style={styles.transactionTitle}>{item.title}</Text>
-                                <Text style={styles.transactionDate}>
-                                    {dayjs(item.date).format("DD.MM.YYYY HH:mm")}
+                        <Swipeable renderRightActions={renderRightActions}>
+                            <View style={styles.transactionCard}>
+                                <Icon
+                                    name={CategoryHelper.getIconName(item.category)}
+                                    size={28}
+                                    color="#555"
+                                />
+                                <View style={styles.transactionInfo}>
+                                    <Text style={styles.transactionTitle}>{item.title}</Text>
+                                    <Text style={styles.transactionDate}>
+                                        {dayjs(item.date).format("DD.MM.YYYY HH:mm")}
+                                    </Text>
+                                </View>
+                                <Text
+                                    style={[
+                                        styles.transactionAmount,
+                                        isIncome ? styles.incomeAmount : styles.expenseAmount,
+                                    ]}
+                                >
+                                    {isIncome
+                                        ? `+ CHF ${item.amount.toFixed(2)}`
+                                        : `– CHF ${item.amount.toFixed(2)}`}
                                 </Text>
                             </View>
-                            <Text
-                                style={[
-                                    styles.transactionAmount,
-                                    isIncome ? styles.incomeAmount : styles.expenseAmount,
-                                ]}
-                            >
-                                {isIncome ? `+ CHF ${item.amount.toFixed(2)}` : `– CHF ${item.amount.toFixed(2)}`}
-                            </Text>
-                        </View>
+                        </Swipeable>
                     );
                 }}
             />
@@ -223,5 +251,12 @@ const styles = StyleSheet.create({
     expenseAmount: {
         color: 'red',
     },
-
+    deleteBox: {
+        backgroundColor: "#EF4444",
+        justifyContent: "center",
+        alignItems: "flex-end",
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        marginBottom: 12,
+    },
 });
