@@ -1,20 +1,24 @@
 // hooks/useTransactions.ts
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import { getTransactions } from '@/components/Transactions';
 import { Transaction } from '@/components/objects/Transaction';
 import { Category } from '@/components/enums/category';
 import { TransactionType } from '@/components/enums/transactionType';
+import {useFocusEffect} from "expo-router";
 
 export const useTransactions = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-    useEffect(() => {
-        const loadTransactions = async () => {
-            const loadedTransactions = await getTransactions();
-            setTransactions(loadedTransactions);
-        };
-        loadTransactions();
-    }, []);
+    const loadTransactions = async () => {
+        const loadedTransactions = await getTransactions();
+        setTransactions(loadedTransactions);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            loadTransactions();
+        }, [])
+    );
 
     const getTransactionsTotalByCategory = (category: Category) => {
         return transactions
