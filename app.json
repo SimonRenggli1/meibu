@@ -10,7 +10,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/MeiBu.png"
     },
     "experiments": {
       "typedRoutes": true
@@ -23,11 +23,17 @@
       "permissions": [
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT"
-      ]
+      ],
+      "icon": "./assets/images/MeiBu.png"
     },
     "ios": {
       "bundleIdentifier": "com.resi.meibu",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": {
+        "light": "./assets/images/MeiBu.png",
+        "dark": "./assets/images/MeiBu.png",
+        "tinted": "./assets/images/MeiBu.png"
+      }
     },
     "plugins": [
       "expo-router",
