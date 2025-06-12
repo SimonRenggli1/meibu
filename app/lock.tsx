@@ -2,7 +2,7 @@ import {Text} from "@rneui/themed";
 import {useEffect, useState} from "react";
 import {useRouter} from "expo-router";
 import {useAuth} from "@/contexts/AuthContext";
-import {SafeAreaView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {StatusBar, StyleSheet, TouchableOpacity, View} from "react-native";
 import * as Haptics from "expo-haptics";
 import * as LocalAuthentication from 'expo-local-authentication';
 import {MaterialCommunityIcons} from "@expo/vector-icons";
@@ -52,7 +52,9 @@ export default function LockScreen() {
 
 
     return (
-        <SafeAreaView>
+        <View style={styles.container}>
+            <StatusBar backgroundColor={"#F9FAFB"} barStyle="dark-content"/>
+
             <Text style={styles.header}>PIN eingeben</Text>
 
             <View style={styles.codeView}>
@@ -112,11 +114,15 @@ export default function LockScreen() {
                     </View>
                 </View>
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#F9FAFB",
+    },
     header: {
         fontSize: 24,
         fontWeight: "bold",

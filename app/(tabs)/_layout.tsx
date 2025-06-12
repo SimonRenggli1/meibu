@@ -41,7 +41,7 @@ export default function TabLayout() {
                 name="settings"
                 options={{
                     title: "Settings",
-                    tabBarLabel: "Settings",
+                    tabBarLabel: "Set Budget",
                     tabBarIcon: ({color}) => (
                         <AntDesign name="setting" size={24} color={color}/>
                     ),

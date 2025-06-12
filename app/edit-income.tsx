@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import { Button, Input, Text } from '@rneui/themed';
 import { useBudgetContext } from '@/contexts/BudgetContext';
 import { useRouter } from 'expo-router';
@@ -16,6 +16,7 @@ export default function EditIncomeScreen() {
 
     return (
         <View style={styles.container}>
+            <StatusBar backgroundColor={"#FFFFFF"} barStyle="dark-content"/>
             <Text h4 style={styles.header}>Einkommen bearbeiten</Text>
             <Input
                 label="Monatliches Einkommen"
@@ -34,6 +35,6 @@ export default function EditIncomeScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#f9f9f9' },
+    container: { flex: 1, justifyContent: "flex-start", padding: 24, backgroundColor: '#f9f9f9' },
     header: {marginBottom: 22, textAlign: 'center'}
 });
