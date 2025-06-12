@@ -3,6 +3,7 @@ import {useMemo} from 'react';
 import {Transaction} from "@/components/objects/Transaction";
 import {TransactionType} from "@/components/enums/transactionType";
 import {Text, View} from "react-native";
+import { Platform } from 'react-native';
 
 export const GraphComponent = ({transactions}: { transactions: Transaction[] }) => {
     const graphData: GraphPoint[] = useMemo(() => {
@@ -40,7 +41,11 @@ export const GraphComponent = ({transactions}: { transactions: Transaction[] }) 
         
     }
 
-    return (
+    return Platform.OS === 'web' ? (
+        <Text style={{ height: 200, color: 'gray', textAlign: 'center' }}>
+            Grafik wird im Web nicht unterstützt
+        </Text>
+    ) : (
         <LineGraph
             points={graphData}
             animated={true}

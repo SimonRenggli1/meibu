@@ -45,6 +45,7 @@ export default function SettingsScreen() {
         <SafeAreaView style={styles.container}>
             <ScrollView>
                 <Text h4 style={styles.title}>Kategorien</Text>
+                <Divider style={styles.divider}/>
 
                 <TouchableOpacity
                     activeOpacity={0.89}
@@ -200,5 +201,8 @@ const styles = StyleSheet.create({
         marginTop: 4,
         flexDirection: 'column',
         flexWrap: 'wrap',
+    },
+    divider: {
+        marginBottom: 8,
     },
 });

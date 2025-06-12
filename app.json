@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png"
       },
-      "package": "com.robin404.meibu"
+      "package": "com.robin404.meibu",
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.resi.meibu",
@@ -37,8 +41,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "05e0d366-90d5-4140-8a28-e3982957fb7e"
+        "projectId": "4b422b19-0b20-4020-90fc-39831db57258"
       }
-    }
+    },
+    "owner": "ninia963"
   }
 }
