@@ -10,7 +10,7 @@ import {
     TouchableWithoutFeedback,
     View
 } from "react-native";
-import {Button, ButtonGroup, Input, Switch, Text} from "@rneui/themed";
+import {Button, ButtonGroup, Divider, Input, Switch, Text} from "@rneui/themed";
 import {Picker} from "@react-native-picker/picker";
 import {storeTransaction} from "@/components/Transactions";
 import {transactionType} from "@/components/enums/transactionType";
@@ -19,7 +19,7 @@ import {Transaction} from "@/components/objects/Transaction";
 import {getAllRecurringIntervals, RecurringInterval} from "@/components/enums/reacurringInterval";
 import {useRouter} from "expo-router";
 
-import { useBudgetContext } from "@/contexts/BudgetContext";
+import {useBudgetContext} from "@/contexts/BudgetContext";
 
 export default function AddTransactionScreen() {
     const categories = category.getAllCategories();
@@ -33,7 +33,7 @@ export default function AddTransactionScreen() {
     const [isRecurring, setIsRecurring] = useState(false);
     const [recurringInterval, setRecurringInterval] = useState<RecurringInterval>(RecurringInterval.MONTHLY);
 
-    const { savingGoal, setSavingGoal } = useBudgetContext();
+    const {savingGoal, setSavingGoal} = useBudgetContext();
     const router = useRouter();
 
     const resetForm = () => {
@@ -62,11 +62,10 @@ export default function AddTransactionScreen() {
             );
             await storeTransaction(transaction);
 
-            // Automatisches Hochzählen beim Sparen
             if (selectedCategory === Category.SAVINGS) {
                 setSavingGoal({
                     ...savingGoal,
-                    saved: (savingGoal?.saved ?? 0) + Math.abs(parseFloat(amount)), // Math.abs, falls Beträge auch negativ eingegeben werden
+                    saved: (savingGoal?.saved ?? 0) + Math.abs(parseFloat(amount)),
                     amount: savingGoal?.amount ?? 0,
                     targetDate: savingGoal?.targetDate,
                 });
@@ -82,87 +81,86 @@ export default function AddTransactionScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView
-                style={{flex: 1}}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={100}
-            >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-                        <Text h4 style={styles.heading}>Neue Transaktion</Text>
+            <View style={styles.container}>
+                <KeyboardAvoidingView
+                    style={{flex: 1}}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    keyboardVerticalOffset={100}
+                >
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <ScrollView>
+                            <Text h4 style={styles.title}>Neue Transaktion</Text>
+                            <Divider style={styles.divider}/>
 
-                        <ButtonGroup
-                            buttons={types}
-                            selectedIndex={typeIndex}
-                            onPress={setTypeIndex}
-                            containerStyle={styles.buttonGroup}
-                        />
-
-                        <Input
-                            placeholder="Name"
-                            value={title}
-                            onChangeText={setTitle}
-                            inputStyle={styles.inputText}
-                        />
-
-                        <Input
-                            placeholder="Betrag"
-                            value={amount}
-                            onChangeText={setAmount}
-                            keyboardType="numeric"
-                            inputStyle={styles.inputText}
-                        />
-
-                        <Text style={styles.label}>Kategorie</Text>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={selectedCategory}
-                                onValueChange={setSelectedCategory}
-                                style={styles.picker}
-                            >
-                                {categories.map((cat) => (
-                                    <Picker.Item key={cat} label={cat} value={cat}/>
-                                ))}
-                            </Picker>
-                        </View>
-
-                        <View style={styles.recurringContainer}>
-                            <Text style={styles.label}>Wiederkehrend</Text>
-                            <Switch
-                                value={isRecurring}
-                                onValueChange={setIsRecurring}
-                                trackColor={{ false: "#ccc", true: "#333C4D" }}
-                                thumbColor={isRecurring ? "#fff" : "#fff"}
+                            <ButtonGroup
+                                buttons={types}
+                                selectedIndex={typeIndex}
+                                onPress={setTypeIndex}
+                                containerStyle={styles.buttonGroup}
                             />
-                        </View>
 
-                        {isRecurring && (
-                            <View style={styles.pickerContainer}>
-                                <Text style={styles.label}>Intervall</Text>
+                            <Input
+                                placeholder="Name"
+                                value={title}
+                                onChangeText={setTitle}
+                                inputStyle={styles.inputText}
+                            />
+
+                            <Input
+                                placeholder="Betrag"
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="numeric"
+                                inputStyle={styles.inputText}
+                            />
+
+                            <Text style={styles.label}>Kategorie</Text>
+                            <View>
                                 <Picker
-                                    selectedValue={recurringInterval}
-                                    onValueChange={(value) => setRecurringInterval(value)}
-                                    style={styles.picker}
+                                    selectedValue={selectedCategory}
+                                    onValueChange={setSelectedCategory}
+                                    itemStyle={{color: "black"}}
                                 >
-                                    {intervals.map((interval) => (
-                                        <Picker.Item
-                                            key={interval.value}
-                                            label={interval.label}
-                                            value={interval.value}
-                                        />
+                                    {categories.map((cat) => (
+                                        <Picker.Item key={cat} label={cat} value={cat}/>
                                     ))}
                                 </Picker>
                             </View>
-                        )}
 
-                        <Button
-                            title="Transaktion speichern"
-                            onPress={saveTransaction}
-                            buttonStyle={styles.saveButton}
-                        />
-                    </ScrollView>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+                            <View style={styles.recurringContainer}>
+                                <Text style={styles.label}>Wiederkehrend</Text>
+                                <Switch
+                                    value={isRecurring}
+                                    onValueChange={setIsRecurring}
+                                    trackColor={{false: "#ccc", true: "#333C4D"}}
+                                    thumbColor={isRecurring ? "#fff" : "#fff"}
+                                />
+                            </View>
+
+                            {isRecurring && (
+                                <View>
+                                    <Picker
+                                        selectedValue={recurringInterval}
+                                        onValueChange={(value) => setRecurringInterval(value)}
+                                        itemStyle={{color: "black"}}
+                                    >
+                                        {intervals.map((interval) => (
+                                            <Picker.Item key={interval.value} label={interval.label}
+                                                         value={interval.value}/>
+                                        ))}
+                                    </Picker>
+                                </View>
+                            )}
+
+                            <Button
+                                title="Transaktion speichern"
+                                onPress={saveTransaction}
+                                buttonStyle={styles.saveButton}
+                            />
+                        </ScrollView>
+                    </TouchableWithoutFeedback>
+                </KeyboardAvoidingView>
+            </View>
         </SafeAreaView>
     );
 }
@@ -170,21 +168,20 @@ export default function AddTransactionScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F9FAFB"
+        backgroundColor: '#F9FAFB',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
-    scrollViewContainer: {
-        flexGrow: 1,
-        justifyContent: "center",
-        padding: 16
-    },
-    heading: {
-        marginBottom: 20,
-        textAlign: "center"
+    title: {
+        marginVertical: 16,
+        textAlign: 'center',
+        color: '#333',
     },
     buttonGroup: {
         marginBottom: 20
     },
     label: {
+        fontSize: 18,
         fontWeight: "600",
         marginTop: 10,
         marginBottom: 5,
@@ -210,7 +207,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingVertical: 12
     },
-    picker: {
-        color: "#000",
-    }
+    divider: {
+        marginBottom: 8,
+    },
 });

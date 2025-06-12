@@ -1,16 +1,15 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {FlatList, StatusBar, StyleSheet, TouchableOpacity, View,} from "react-native";
+import {FlatList, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, View,} from "react-native";
 import {Text} from "@rneui/themed";
-import {getTransactions, deleteTransaction} from "@/components/Transactions";
+import {deleteTransaction, getTransactions, storeTransaction} from "@/components/Transactions";
 import {Transaction} from "@/components/objects/Transaction";
 import dayjs from "dayjs";
 import {TransactionType} from "@/components/enums/transactionType";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {useFocusEffect} from "expo-router";
-import {GraphComponent} from "@/components/Graph";
 import {CategoryHelper} from "@/helpers/CategoryHelper";
 import {generateRecurringInstances} from "@/helpers/GenerateRecurringInstances";
-import { Swipeable } from "react-native-gesture-handler";
+import {Swipeable} from "react-native-gesture-handler";
 
 
 const TIME_FILTERS = ["Heute", "Woche", "Monat", "Jahr"];
@@ -31,13 +30,20 @@ export default function HomeScreen() {
             const fetchTransactions = async () => {
                 const allTransactions = await getTransactions();
 
-                const recurringInstances = allTransactions
-                    .filter(t => t.isRecurring)
-                    .flatMap(t => generateRecurringInstances(t));
+                const recurringTemplates = allTransactions.filter(t => t.isRecurring);
+                const newInstances: Transaction[] = [];
 
-                const nonRecurring = allTransactions.filter(t => !t.isRecurring);
+                for (const template of recurringTemplates) {
+                    const generated = generateRecurringInstances(template, allTransactions);
+                    newInstances.push(...generated);
+                }
 
-                setTransactions([...nonRecurring, ...recurringInstances]);
+                for (const txn of newInstances) {
+                    await storeTransaction(txn);
+                }
+
+                const updatedTransactions = await getTransactions();
+                setTransactions(updatedTransactions);
             };
 
             fetchTransactions();
@@ -73,84 +79,86 @@ export default function HomeScreen() {
     }, [selectedFilter, transactions]);
 
     return (
-        <View style={styles.container}>
-            <StatusBar backgroundColor={"#F9FAFB"} barStyle="dark-content"/>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
+                <StatusBar backgroundColor={"#F9FAFB"} barStyle="dark-content"/>
 
-            <Text style={styles.header}>Deine Ausgaben</Text>
+                <Text style={styles.header}>Deine Ausgaben</Text>
 
-            <View style={styles.graphContainer}>
-                <Text style={styles.totalText}>Gesamt: CHF {totalSpent.toFixed(2)}</Text>
-            </View>
+                <View style={styles.graphContainer}>
+                    <Text style={styles.totalText}>Gesamt: CHF {totalSpent.toFixed(2)}</Text>
+                </View>
 
-            <View style={styles.filterContainer}>
-                {TIME_FILTERS.map((filter) => (
-                    <TouchableOpacity
-                        key={filter}
-                        style={[
-                            styles.filterButton,
-                            selectedFilter === filter && styles.filterButtonSelected,
-                        ]}
-                        onPress={() => setSelectedFilter(filter)}
-                    >
-                        <Text
+                <View style={styles.filterContainer}>
+                    {TIME_FILTERS.map((filter) => (
+                        <TouchableOpacity
+                            key={filter}
                             style={[
-                                styles.filterText,
-                                selectedFilter === filter && styles.filterTextSelected,
+                                styles.filterButton,
+                                selectedFilter === filter && styles.filterButtonSelected,
                             ]}
+                            onPress={() => setSelectedFilter(filter)}
                         >
-                            {filter}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+                            <Text
+                                style={[
+                                    styles.filterText,
+                                    selectedFilter === filter && styles.filterTextSelected,
+                                ]}
+                            >
+                                {filter}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
 
-            <Text style={styles.sectionTitle}>Transaktionen</Text>
+                <Text style={styles.sectionTitle}>Transaktionen</Text>
 
-            <FlatList
-                data={[...filteredTransactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={styles.transactionList}
-                renderItem={({item}) => {
-                    const isIncome = item.type === "Income";
+                <FlatList
+                    data={[...filteredTransactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.transactionList}
+                    renderItem={({item}) => {
+                        const isIncome = item.type === "Income";
 
-                    const renderRightActions = () => (
-                        <View style={styles.deleteBox}>
-                            <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                                <Icon name="trash-can-outline" size={30} color="#fff" />
-                            </TouchableOpacity>
-                        </View>
-                    );
+                        const renderRightActions = () => (
+                            <View style={styles.deleteBox}>
+                                <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                                    <Icon name="trash-can-outline" size={30} color="#fff"/>
+                                </TouchableOpacity>
+                            </View>
+                        );
 
-                    return (
-                        <Swipeable renderRightActions={renderRightActions}>
-                            <View style={styles.transactionCard}>
-                                <Icon
-                                    name={CategoryHelper.getIconName(item.category)}
-                                    size={28}
-                                    color="#555"
-                                />
-                                <View style={styles.transactionInfo}>
-                                    <Text style={styles.transactionTitle}>{item.title}</Text>
-                                    <Text style={styles.transactionDate}>
-                                        {dayjs(item.date).format("DD.MM.YYYY HH:mm")}
+                        return (
+                            <Swipeable renderRightActions={renderRightActions}>
+                                <View style={styles.transactionCard}>
+                                    <Icon
+                                        name={CategoryHelper.getIconName(item.category)}
+                                        size={28}
+                                        color="#555"
+                                    />
+                                    <View style={styles.transactionInfo}>
+                                        <Text style={styles.transactionTitle}>{item.title}</Text>
+                                        <Text style={styles.transactionDate}>
+                                            {dayjs(item.date).format("DD.MM.YYYY HH:mm")}
+                                        </Text>
+                                    </View>
+                                    <Text
+                                        style={[
+                                            styles.transactionAmount,
+                                            isIncome ? styles.incomeAmount : styles.expenseAmount,
+                                        ]}
+                                    >
+                                        {isIncome
+                                            ? `+ CHF ${item.amount.toFixed(2)}`
+                                            : `– CHF ${item.amount.toFixed(2)}`}
                                     </Text>
                                 </View>
-                                <Text
-                                    style={[
-                                        styles.transactionAmount,
-                                        isIncome ? styles.incomeAmount : styles.expenseAmount,
-                                    ]}
-                                >
-                                    {isIncome
-                                        ? `+ CHF ${item.amount.toFixed(2)}`
-                                        : `– CHF ${item.amount.toFixed(2)}`}
-                                </Text>
-                            </View>
-                        </Swipeable>
-                    );
-                }}
-            />
-        </View>
+                            </Swipeable>
+                        );
+                    }}
+                />
+            </View>
+        </SafeAreaView>
     );
 }
 
@@ -158,17 +166,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F9FAFB",
-        padding: 20,
-        paddingTop: 40,
+        paddingHorizontal: 10
     },
     header: {
         fontSize: 26,
-        fontWeight: "700",
-        color: "#111827",
-        marginBottom: 16,
+        fontWeight: "bold",
+        marginVertical: 16,
+        textAlign: 'center',
+        color: '#333',
     },
     graphContainer: {
-        backgroundColor: "#fff",
         borderRadius: 16,
         padding: 16,
         marginBottom: 24,
