@@ -115,11 +115,12 @@ export default function AddTransactionScreen() {
                             />
 
                             <Text style={styles.label}>Kategorie</Text>
-                            <View>
+                            <View style={styles.pickerContainer}>
                                 <Picker
                                     selectedValue={selectedCategory}
                                     onValueChange={setSelectedCategory}
                                     itemStyle={{color: "black"}}
+                                    style={styles.picker}
                                 >
                                     {categories.map((cat) => (
                                         <Picker.Item key={cat} label={cat} value={cat}/>
@@ -206,6 +207,9 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderRadius: 8,
         paddingVertical: 12
+    },
+    picker: {
+        color: "#000"
     },
     divider: {
         marginBottom: 8,
