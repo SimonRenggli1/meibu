@@ -1,17 +1,21 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
-import { ListItem, Icon, Text, Divider, Card } from '@rneui/themed';
-import { useBudgetContext } from '@/contexts/BudgetContext';
-import { Category, category } from '@/components/enums/category';
-import { useTransactions } from '@/hooks/useTransactions';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {StyleSheet, ScrollView, View, TouchableOpacity} from 'react-native';
+import {ListItem, Icon, Text, Divider, Card} from '@rneui/themed';
+import {useBudgetContext} from '@/contexts/BudgetContext';
+import {Category, category} from '@/components/enums/category';
+import {useTransactions} from '@/hooks/useTransactions';
+import {useRouter} from 'expo-router';
+import {SmallSavingGoalCard} from "@/components/SmallSavingGoalCard";
 
+// ===== SETTINGS-SCREEN =====
 export default function SettingsScreen() {
     const router = useRouter();
-    const { categoryBudgets, income } = useBudgetContext();
-    const { getTransactionsTotalByCategory } = useTransactions();
+    // Budget-Kontext: Kategorien-Budgets und Einkommen
+    const {categoryBudgets, income} = useBudgetContext();
+    // Benutzt Hook für Transaktionssummen pro Kategorie
+    const {getTransactionsTotalByCategory} = useTransactions();
 
+    // --- Farbe je Kategorie (ohne Sparen/Savings) ---
     const categoryColors = {
         [Category.FOOD]: '#4caf50',
         [Category.TRANSPORT]: '#2196f3',
@@ -21,94 +25,113 @@ export default function SettingsScreen() {
         [Category.OTHER]: '#a1887f',
     };
 
-    const totalCategoryLimits = category.getAllCategories().reduce((sum, cat) => sum + (categoryBudgets[cat] || 0), 0);
+    // ----- BERECHNUNGEN -----
+    // Gesamtsumme aller Kategorie-Budgets (ohne Savings)
+    const totalCategoryLimits = category.getAllCategories()
+        .filter(cat => cat !== Category.SAVINGS)
+        .reduce((sum, cat) => sum + (categoryBudgets[cat] || 0), 0);
+
+    // Budget-Rest nach Kategorie-Budgets
     const incomeRemaining = income - totalCategoryLimits;
 
+    // ================= RENDER-BLOCK =================
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
             <ScrollView>
+                {/* --- Überschrift --- */}
                 <Text h4 style={styles.title}>Kategorien</Text>
-                <Divider style={styles.divider} />
+                <Divider style={styles.divider}/>
 
+                {/* === EINAHMEN-ANZEIGE === */}
                 <TouchableOpacity
                     activeOpacity={0.89}
                     onPress={() => router.push('/edit-income')}
                 >
                     <Card containerStyle={styles.infoCard}>
                         <View style={styles.infoRow}>
-                            <Icon name="wallet" type="entypo" color="#23236e" size={30} />
-                            <View style={{ marginLeft: 10 }}>
+                            <Icon name="wallet" type="entypo" color="#23236e" size={30}/>
+                            <View style={{marginLeft: 10}}>
                                 <Text style={styles.infoTitle}>
                                     Einkommen:{' '}
-                                    <Text style={styles.infoValue}>${income.toFixed(2)}</Text>
+                                    <Text style={styles.infoValue}>CHF{income.toFixed(2)}</Text>
                                 </Text>
                                 <Text style={styles.infoTitle}>
-                                    Summe Kategorie-Limits:{' '}
-                                    <Text style={[styles.infoValue, { color: '#1e88e5' }]}>
-                                        ${totalCategoryLimits.toFixed(2)}
+                                    Kategorie-Limits:{' '}
+                                    <Text style={[styles.infoValue, {color: '#1e88e5'}]}>
+                                        CHF{totalCategoryLimits.toFixed(2)}
                                     </Text>
                                 </Text>
                                 <Text style={styles.infoTitle}>
                                     Verfügbar nach Limits:{' '}
                                     <Text style={[
                                         styles.infoValue,
-                                        { color: incomeRemaining < 0 ? '#c62828' : '#4caf50' }
+                                        {color: incomeRemaining < 0 ? '#c62828' : '#4caf50'}
                                     ]}>
-                                        ${incomeRemaining.toFixed(2)}
+                                        CHF{incomeRemaining.toFixed(2)}
                                     </Text>
                                 </Text>
                             </View>
+                            {/* Icon für "chevron" */}
                             <Icon
                                 name="chevron-right"
                                 type="feather"
                                 color="#23236e"
                                 size={28}
-                                style={{ alignSelf: 'center', marginLeft: 24 }}
+                                style={{alignSelf: 'center', marginLeft: 24}}
                             />
                         </View>
                     </Card>
                 </TouchableOpacity>
 
-                {category.getAllCategories().map((cat) => {
-                    const spent = getTransactionsTotalByCategory(cat);
-                    const limit = categoryBudgets[cat] || 0;
-                    const color = categoryColors[cat] || "#1976d2";
-                    return (
-                        <ListItem
-                            key={cat}
-                            onPress={() =>
-                                router.push({
-                                    pathname: '/category-settings/[category]',
-                                    params: { category: cat }
-                                })
-                            }
-                            bottomDivider
-                            containerStyle={styles.listItemContainer}
-                        >
-                            <Icon key="icon" name="credit-card" type="feather" color={color} />
-                            <ListItem.Content key="content">
-                                <ListItem.Title style={[styles.listItemTitle, { color }]}>
-                                    {cat}
-                                </ListItem.Title>
-                                <ListItem.Subtitle>
-                                    Ausgegeben: <Text style={{ color: '#d32f2f', fontWeight: 'bold' }}>${spent.toFixed(2)}</Text>
-                                    {'  |  '}
-                                    Limit: <Text>${limit.toFixed(2)}</Text>
-                                </ListItem.Subtitle>
-                            </ListItem.Content>
-                            <ListItem.Chevron key="chevron" />
-                        </ListItem>
-                    );
-                })}
+
+                {/* === SPARZIEL-KARTE === */}
+                <SmallSavingGoalCard/>
+
+                {/* === KATEGORIE-KARTEN (ohne Savings!) === */}
+                {category.getAllCategories()
+                    .filter(cat => cat !== Category.SAVINGS)     // <--- Sparen wird ausgeblendet!
+                    .map((cat) => {
+                        const spent = getTransactionsTotalByCategory(cat);
+                        const limit = categoryBudgets[cat] || 0;
+                        const color = categoryColors[cat] || "#1976d2";
+                        return (
+                            <ListItem
+                                key={cat}
+                                onPress={() =>
+                                    router.push({
+                                        pathname: '/category-settings/[category]',
+                                        params: {category: cat}
+                                    })
+                                }
+                                bottomDivider
+                                containerStyle={styles.listItemContainer}
+                            >
+                                <Icon key="icon" name="credit-card" type="feather" color={color}/>
+                                <ListItem.Content key="content">
+                                    <ListItem.Title style={[styles.listItemTitle, {color}]}>
+                                        {cat}
+                                    </ListItem.Title>
+                                    <ListItem.Subtitle>
+                                        Spent: <Text
+                                        style={{color: '#d32f2f', fontWeight: 'bold'}}>CHF{spent.toFixed(2)}</Text>
+                                        {'  |  '}
+                                        Limit: <Text>CHF{limit.toFixed(2)}</Text>
+                                    </ListItem.Subtitle>
+                                </ListItem.Content>
+                                <ListItem.Chevron key="chevron"/>
+                            </ListItem>
+                        );
+                    })}
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 
+// ===== STYLES =====
 const styles = StyleSheet.create({
-    safeArea: {
+    container: {
         flex: 1,
-        backgroundColor: '#f7f7f7'
+        backgroundColor: '#F9FAFB'
     },
     infoCard: {
         marginBottom: 15,
@@ -148,7 +171,7 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOpacity: 0.06,
         shadowRadius: 5,
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: {width: 1, height: 2},
     },
     listItemTitle: {
         fontWeight: 'bold',

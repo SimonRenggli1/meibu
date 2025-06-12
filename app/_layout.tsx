@@ -25,6 +25,8 @@ export default function RootLayout() {
                             <AuthGuard>
                                 <Stack>
                                     <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                                    <Stack.Screen name="category-settings/[category]" options={{title:"", headerShown: true}}/>
+                                    <Stack.Screen name="edit-income" options={{title:"", headerShown: true}}/>
                                     <Stack.Screen name="lock" options={{headerShown: false}}/>
                                     <Stack.Screen name="+not-found"/>
                                 </Stack>

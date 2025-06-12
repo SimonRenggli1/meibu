@@ -14,10 +14,12 @@ import {Button, ButtonGroup, Input, Switch, Text} from "@rneui/themed";
 import {Picker} from "@react-native-picker/picker";
 import {storeTransaction} from "@/components/Transactions";
 import {transactionType} from "@/components/enums/transactionType";
-import {category} from "@/components/enums/category";
+import {category, Category} from "@/components/enums/category";
 import {Transaction} from "@/components/objects/Transaction";
 import {getAllRecurringIntervals, RecurringInterval} from "@/components/enums/reacurringInterval";
 import {useRouter} from "expo-router";
+
+import { useBudgetContext } from "@/contexts/BudgetContext";
 
 export default function AddTransactionScreen() {
     const categories = category.getAllCategories();
@@ -31,6 +33,7 @@ export default function AddTransactionScreen() {
     const [isRecurring, setIsRecurring] = useState(false);
     const [recurringInterval, setRecurringInterval] = useState<RecurringInterval>(RecurringInterval.MONTHLY);
 
+    const { savingGoal, setSavingGoal } = useBudgetContext();
     const router = useRouter();
 
     const resetForm = () => {
@@ -56,6 +59,17 @@ export default function AddTransactionScreen() {
                 types[typeIndex],
             );
             await storeTransaction(transaction);
+
+            // Automatisches Hochzählen beim Sparen
+            if (selectedCategory === Category.SAVINGS) {
+                setSavingGoal({
+                    ...savingGoal,
+                    saved: (savingGoal?.saved ?? 0) + Math.abs(parseFloat(amount)), // Math.abs, falls Beträge auch negativ eingegeben werden
+                    amount: savingGoal?.amount ?? 0,
+                    targetDate: savingGoal?.targetDate,
+                });
+            }
+
             resetForm();
             router.push('/')
         } catch (e) {
@@ -115,6 +129,8 @@ export default function AddTransactionScreen() {
                             <Switch
                                 value={isRecurring}
                                 onValueChange={setIsRecurring}
+                                trackColor={{ false: "#ccc", true: "#333C4D" }}
+                                thumbColor={isRecurring ? "#fff" : "#fff"}
                             />
                         </View>
 
@@ -152,7 +168,7 @@ export default function AddTransactionScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f4f4f4"
+        backgroundColor: "#F9FAFB"
     },
     scrollViewContainer: {
         flexGrow: 1,
@@ -169,7 +185,8 @@ const styles = StyleSheet.create({
     label: {
         fontWeight: "600",
         marginTop: 10,
-        marginBottom: 5
+        marginBottom: 5,
+        marginLeft: 5
     },
     inputText: {
         fontSize: 16
@@ -184,7 +201,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginVertical: 10
+        marginVertical: 10,
     },
     saveButton: {
         marginTop: 20,

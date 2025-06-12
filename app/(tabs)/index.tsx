@@ -1,14 +1,15 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {FlatList, StyleSheet, TouchableOpacity, View,} from "react-native";
+import {FlatList, StatusBar, StyleSheet, TouchableOpacity, View,} from "react-native";
 import {Text} from "@rneui/themed";
 import {getTransactions} from "@/components/Transactions";
 import {Transaction} from "@/components/objects/Transaction";
 import dayjs from "dayjs";
 import {TransactionType} from "@/components/enums/transactionType";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {useFocusEffect, useRouter} from "expo-router";
+import {useFocusEffect} from "expo-router";
 import {GraphComponent} from "@/components/Graph";
 import {CategoryHelper} from "@/helpers/CategoryHelper";
+
 
 const TIME_FILTERS = ["Heute", "Woche", "Monat", "Jahr"];
 
@@ -57,6 +58,8 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
+            <StatusBar backgroundColor={"#F9FAFB"} barStyle="dark-content"/>
+
             <Text style={styles.header}>Deine Ausgaben</Text>
 
             <View style={styles.graphContainer}>
@@ -89,10 +92,10 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Transaktionen</Text>
 
             <FlatList
-                data={filteredTransactions}
+                data={[...filteredTransactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.transactionList}
-                renderItem={({ item }) => {
+                renderItem={({item}) => {
                     const isIncome = item.type === "Income";
                     return (
                         <View style={styles.transactionCard}>
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#F9FAFB",
         padding: 20,
-        paddingTop: 80,
+        paddingTop: 40,
     },
     header: {
         fontSize: 26,

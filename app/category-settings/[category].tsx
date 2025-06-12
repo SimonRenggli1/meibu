@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useLocalSearchParams, useRouter} from 'expo-router';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {Button, Input, Text} from '@rneui/themed';
 import {useBudgetContext} from '@/contexts/BudgetContext';
 import {Category} from '@/components/enums/category';
@@ -13,21 +13,29 @@ export default function EditCategoryLimitScreen() {
 
     const isValidCategory = category && Object.values(Category).includes(category as Category);
 
-    const prevLimit = isValidCategory ? categoryBudgets[category as Category] || 0 : 0;
+    const prevLimit = isValidCategory ? categoryBudgets[category as Category] : undefined;
 
-    const [value, setValue] = useState(String(prevLimit ?? ""));
+    const [value, setValue] = useState(
+        prevLimit !== undefined && prevLimit !== null ? String(prevLimit) : ""
+    );
 
     if (!isValidCategory) {
         return <Text>Ungültige Kategorie!</Text>;
     }
 
     const handleSave = () => {
-        setCategoryBudget(category as Category, Number(value));
+        if (value === "") {
+            setCategoryBudget(category as Category, undefined); // Budget löschen
+        } else {
+            setCategoryBudget(category as Category, Number(value)); // Budget setzen
+        }
         router.back();
     };
 
+
     return (
         <View style={styles.container}>
+            <StatusBar backgroundColor={"#FFFFFF"} barStyle="dark-content"/>
             <Text h4 style={styles.header}>Limit für {category} setzen</Text>
             <Input
                 label="Monatslimit"
@@ -40,6 +48,7 @@ export default function EditCategoryLimitScreen() {
                 title="Speichern"
                 onPress={handleSave}
                 disabled={isNaN(Number(value)) || value === ''}
+                buttonStyle={styles.buttonSave}
             />
         </View>
     );
@@ -47,5 +56,6 @@ export default function EditCategoryLimitScreen() {
 
 const styles = StyleSheet.create({
     container: {flex: 1, justifyContent: "flex-start", padding: 24, backgroundColor: '#f9f9f9'},
-    header: {marginBottom: 22, textAlign: 'center'}
+    header: {marginBottom: 22, textAlign: 'center',},
+    buttonSave: {borderRadius: 8}
 });

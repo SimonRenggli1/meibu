@@ -1,21 +1,29 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, {createContext, useState, useContext, useEffect, ReactNode} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Category } from '@/components/enums/category';
+import {Category} from '@/components/enums/category';
 
 interface CategoryBudget {
     [key: string]: number;
 }
 
+export interface SavingGoal {
+    amount: number;
+    targetDate?: string;
+    saved?: number;
+}
+
 interface BudgetContextType {
     categoryBudgets: CategoryBudget;
-    setCategoryBudget: (category: Category, limit: number) => void;
+    setCategoryBudget: (category: Category, limit?: number) => void;
     getCategoryBudget: (category: Category) => number;
     getTotalBudget: () => number;
     overallBudgetLimit: number;
     setOverallBudgetLimit: (limit: number) => void;
     income: number;
     setIncome: (income: number) => void;
-    isLoading: boolean; // NEU!
+    isLoading: boolean;
+    savingGoal: SavingGoal | null;
+    setSavingGoal: (goal: SavingGoal | null) => void;
 }
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
@@ -24,7 +32,7 @@ interface BudgetProviderProps {
     children: ReactNode;
 }
 
-export const BudgetProvider: React.FC<BudgetProviderProps> = ({ children }) => {
+export const BudgetProvider: React.FC<BudgetProviderProps> = ({children}) => {
     const [categoryBudgets, setCategoryBudgets] = useState<CategoryBudget>({});
     const [overallBudgetLimit, setOverallBudgetLimit] = useState<number>(0);
     const [income, setIncome] = useState<number>(0);
@@ -32,12 +40,15 @@ export const BudgetProvider: React.FC<BudgetProviderProps> = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [loaded, setLoaded] = useState(false);
 
+    const [savingGoal, setSavingGoalState] = useState<SavingGoal | null>(null);
+
     useEffect(() => {
         const loadBudgetData = async () => {
             try {
                 const storedBudgets = await AsyncStorage.getItem('@category_budgets');
                 const storedLimit = await AsyncStorage.getItem('@overall_budget_limit');
                 const storedIncome = await AsyncStorage.getItem('@income');
+                const storedSavingGoal = await AsyncStorage.getItem('@saving_goal');
                 if (storedBudgets !== null) {
                     setCategoryBudgets(JSON.parse(storedBudgets));
                 }
@@ -46,6 +57,9 @@ export const BudgetProvider: React.FC<BudgetProviderProps> = ({ children }) => {
                 }
                 if (storedIncome !== null) {
                     setIncome(parseFloat(storedIncome));
+                }
+                if (storedSavingGoal !== null) {
+                    setSavingGoalState(JSON.parse(storedSavingGoal));
                 }
             } catch (e) {
                 console.error('Failed to load budget data', e);
@@ -63,15 +77,23 @@ export const BudgetProvider: React.FC<BudgetProviderProps> = ({ children }) => {
                 await AsyncStorage.setItem('@category_budgets', JSON.stringify(categoryBudgets));
                 await AsyncStorage.setItem('@overall_budget_limit', overallBudgetLimit.toString());
                 await AsyncStorage.setItem('@income', income.toString());
+                await AsyncStorage.setItem('@saving_goal', savingGoal ? JSON.stringify(savingGoal) : "");
             } catch (e) {
                 console.error('Failed to save budget data', e);
             }
         };
         saveBudgetData();
-    }, [categoryBudgets, overallBudgetLimit, income, loaded]);
+    }, [categoryBudgets, overallBudgetLimit, income, loaded, savingGoal]);
 
-    const setCategoryBudget = (category: Category, limit: number) => {
-        setCategoryBudgets(prev => ({ ...prev, [category]: limit }));
+    const setCategoryBudget = (category: Category, limit?: number) => {
+        setCategoryBudgets(prev => {
+            if (limit === undefined) {
+                const updated = {...prev};
+                delete updated[category];
+                return updated;
+            }
+            return {...prev, [category]: limit};
+        });
     };
 
     const getCategoryBudget = (category: Category): number => {
@@ -80,6 +102,10 @@ export const BudgetProvider: React.FC<BudgetProviderProps> = ({ children }) => {
 
     const getTotalBudget = () => {
         return Object.values(categoryBudgets).reduce((sum, limit) => sum + limit, 0);
+    };
+
+    const setSavingGoal = (goal: SavingGoal | null) => {
+        setSavingGoalState(goal);
     };
 
     return (
@@ -94,6 +120,8 @@ export const BudgetProvider: React.FC<BudgetProviderProps> = ({ children }) => {
                 income,
                 setIncome,
                 isLoading,
+                savingGoal,
+                setSavingGoal,
             }}
         >
             {children}
